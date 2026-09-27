@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Tetris · Eva's Arcade</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <h1>TETRIS</h1>
+      <p class="tagline">Eva's Arcade</p>
+    </header>
+
+    <main class="game-wrap">
+      <section class="board-col">
+        <div class="board-frame">
+          <canvas id="board" width="300" height="600"></canvas>
+          <div id="overlay" class="overlay show">
+            <div class="overlay-card">
+              <h2 id="overlay-title">TETRIS</h2>
+              <p id="overlay-text">按開始來一場吧</p>
+              <button id="btn-start" class="btn primary">開始遊戲</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="touch-controls" id="touch-controls">
+          <button class="tbtn" data-action="left" aria-label="左移">◀</button>
+          <button class="tbtn" data-action="right" aria-label="右移">▶</button>
+          <button class="tbtn" data-action="rotate" aria-label="旋轉">⟳</button>
+          <button class="tbtn" data-action="down" aria-label="加速落下">▼</button>
+          <button class="tbtn wide" data-action="drop" aria-label="直接落下">⤓ 落下</button>
+          <button class="tbtn" data-action="hold" aria-label="保留方塊">⇄</button>
+        </div>
+      </section>
+
+      <aside class="panel">
+        <div class="stat-grid">
+          <div class="stat">
+            <span class="label">分數</span>
+            <span class="value" id="score">0</span>
+          </div>
+          <div class="stat">
+            <span class="label">等級</span>
+            <span class="value" id="level">1</span>
+          </div>
+          <div class="stat">
+            <span class="label">消除行數</span>
+            <span class="value" id="lines">0</span>
+          </div>
+        </div>
+
+        <div class="preview-row">
+          <div class="preview-box">
+            <span class="label">下一個</span>
+            <canvas id="next" width="120" height="120"></canvas>
+          </div>
+          <div class="preview-box">
+            <span class="label">保留</span>
+            <canvas id="hold" width="120" height="120"></canvas>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="btn-pause" class="btn">暫停</button>
+          <button id="btn-restart" class="btn">重來</button>
+        </div>
+
+        <div class="help">
+          <p><kbd>←</kbd><kbd>→</kbd> 移動　<kbd>↓</kbd> 加速</p>
+          <p><kbd>↑</kbd>/<kbd>X</kbd> 旋轉　<kbd>Space</kbd> 落下</p>
+          <p><kbd>C</kbd> 保留　<kbd>P</kbd> 暫停</p>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="foot">
+      <p>Built by Eva · Deployed on Vercel</p>
+    </footer>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
