@@ -290,6 +290,103 @@ kbd {
   letter-spacing: 1px;
 }
 
+/* ---------- Leaderboard ---------- */
+.board-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.leaderboard {
+  list-style: none;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 13px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.leaderboard li {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.leaderboard li.loading {
+  color: var(--dim);
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.leaderboard .rank {
+  color: var(--dim);
+  width: 20px;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.leaderboard li:nth-child(1) .rank {
+  color: #facc15;
+  font-weight: 800;
+}
+
+.leaderboard li:nth-child(2) .rank {
+  color: #e2e8f0;
+  font-weight: 800;
+}
+
+.leaderboard li:nth-child(3) .rank {
+  color: #fb923c;
+  font-weight: 800;
+}
+
+.leaderboard .lb-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.leaderboard .lb-score {
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.score-submit {
+  display: flex;
+  gap: 8px;
+  margin: 4px 0 14px;
+}
+
+.score-submit[hidden] {
+  display: none;
+}
+
+.score-submit input {
+  flex: 1;
+  background: #0d1330;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  padding: 10px 12px;
+  outline: none;
+  min-width: 0;
+}
+
+.score-submit input:focus {
+  border-color: var(--accent);
+}
+
+.score-submit .btn {
+  white-space: nowrap;
+}
+
 @media (max-width: 640px) {
   .topbar h1 {
     font-size: 32px;

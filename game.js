@@ -74,6 +74,85 @@
   const btnStart = document.getElementById("btn-start");
   const btnPause = document.getElementById("btn-pause");
   const btnRestart = document.getElementById("btn-restart");
+  const lbEl = document.getElementById("leaderboard");
+  const scoreSubmitEl = document.getElementById("score-submit");
+  const nameInput = document.getElementById("player-name");
+  const btnSubmitScore = document.getElementById("btn-submit-score");
+
+  // ---------- Supabase leaderboard (optional) ----------
+  let sb = null; // supabase client, null when not configured
+  let scoreSubmitted = false;
+
+  function initSupabase() {
+    try {
+      const cfg = window.TETRIS_CONFIG;
+      if (!window.supabase || !cfg || !cfg.SUPABASE_URL) return;
+      if (cfg.SUPABASE_URL.includes("YOUR_PROJECT_REF")) return;
+      sb = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+    } catch (e) {
+      sb = null;
+    }
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, (c) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    })[c]);
+  }
+
+  async function loadLeaderboard() {
+    if (!lbEl) return;
+    if (!sb) {
+      lbEl.innerHTML = '<li class="loading">排行榜未連線</li>';
+      return;
+    }
+    const { data, error } = await sb
+      .schema("tetris")
+      .from("scores")
+      .select("name,score,level")
+      .order("score", { ascending: false })
+      .limit(10);
+    if (error) {
+      lbEl.innerHTML = '<li class="loading">載入失敗</li>';
+      return;
+    }
+    if (data.length === 0) {
+      lbEl.innerHTML = '<li class="loading">還沒有紀錄，來當第一名！</li>';
+      return;
+    }
+    lbEl.innerHTML = "";
+    data.forEach((r, i) => {
+      const li = document.createElement("li");
+      li.innerHTML =
+        `<span class="rank">${i + 1}</span>` +
+        `<span class="lb-name">${esc(r.name)}</span>` +
+        `<span class="lb-score">${r.score}</span>`;
+      lbEl.appendChild(li);
+    });
+  }
+
+  async function submitScore() {
+    if (!sb || scoreSubmitted) return;
+    const name = nameInput.value.trim().slice(0, 20) || "匿名";
+    btnSubmitScore.disabled = true;
+    const { error } = await sb
+      .schema("tetris")
+      .from("scores")
+      .insert({ name, score, level, lines });
+    if (!error) {
+      scoreSubmitted = true;
+      scoreSubmitEl.hidden = true;
+      overlayText.textContent = `最終分數 ${score} · 已登上排行榜！`;
+      loadLeaderboard();
+    } else {
+      overlayText.textContent = "送出失敗：" + error.message;
+      btnSubmitScore.disabled = false;
+    }
+  }
 
   // ---------- State ----------
   let grid; // ROWS x COLS, 0 or type letter
@@ -275,6 +354,8 @@
   // ---------- Flow ----------
   function start() {
     reset();
+    scoreSubmitted = false;
+    if (scoreSubmitEl) scoreSubmitEl.hidden = true;
     state = "playing";
     hideOverlay();
     spawn();
@@ -301,6 +382,14 @@
   function gameOver() {
     state = "over";
     cancelAnimationFrame(rafId);
+    const canSubmit = sb && score > 0 && !scoreSubmitted;
+    if (scoreSubmitEl) {
+      scoreSubmitEl.hidden = !canSubmit;
+      if (canSubmit) {
+        nameInput.value = "";
+        btnSubmitScore.disabled = false;
+      }
+    }
     showOverlay("遊戲結束", `最終分數 ${score} · 等級 ${level}`, "再來一場");
   }
 
@@ -541,12 +630,15 @@
   });
   btnPause.addEventListener("click", togglePause);
   btnRestart.addEventListener("click", start);
+  if (btnSubmitScore) btnSubmitScore.addEventListener("click", submitScore);
 
   document.addEventListener("visibilitychange", () => {
     if (document.hidden && state === "playing") togglePause();
   });
 
   // ---------- Init ----------
+  initSupabase();
   reset();
+  loadLeaderboard();
   showOverlay("TETRIS", "按開始來一場吧", "開始遊戲");
 })();

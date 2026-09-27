@@ -21,6 +21,10 @@
             <div class="overlay-card">
               <h2 id="overlay-title">TETRIS</h2>
               <p id="overlay-text">按開始來一場吧</p>
+              <div id="score-submit" class="score-submit" hidden>
+                <input id="player-name" type="text" maxlength="20" placeholder="輸入名字登上排行榜" autocomplete="off" />
+                <button id="btn-submit-score" class="btn primary">送出分數</button>
+              </div>
               <button id="btn-start" class="btn primary">開始遊戲</button>
             </div>
           </div>
@@ -73,6 +77,13 @@
           <p><kbd>↑</kbd>/<kbd>X</kbd> 旋轉　<kbd>Space</kbd> 落下</p>
           <p><kbd>C</kbd> 保留　<kbd>P</kbd> 暫停</p>
         </div>
+
+        <div class="board-card">
+          <span class="label">排行榜 TOP 10</span>
+          <ol id="leaderboard" class="leaderboard">
+            <li class="loading">載入中…</li>
+          </ol>
+        </div>
       </aside>
     </main>
 
@@ -81,6 +92,8 @@
     </footer>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="config.js"></script>
   <script src="game.js"></script>
 </body>
 </html>
